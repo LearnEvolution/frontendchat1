@@ -12,7 +12,11 @@ if (!token || !usuario.id) {
 }
 
 // Conecta no WebSocket
-const socket = io(API)
+           //const socket = io(API)
+const socket = io(API, {
+  transports: ['websocket', 'polling'],
+  secure: true
+})
 
 // Destinatários selecionados
 let destinatarios = []
