@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatZap</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="chat-page">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="meu-perfil">
+        <div class="avatar" id="meu-avatar">C</div>
+        <div>
+          <div class="meu-nome" id="meu-nome">Carregando...</div>
+          <div class="meu-status">🟢 Online</div>
+        </div>
+      </div>
+      <button class="btn-sair" onclick="sair()">Sair</button>
+    </div>
+
+    <div class="sidebar-titulo">Enviar para</div>
+
+    <div class="lista-usuarios">
+
+      <!-- TODOS -->
+      <div class="usuario-item todos-selecionado" id="item-todos" onclick="toggleTodos()">
+        <div class="bolinha online"></div>
+        <div class="usuario-nome">👥 Todos</div>
+        <div class="check" id="check-todos">✅</div>
+      </div>
+
+      <!-- LISTA DINÂMICA -->
+      <div id="lista-usuarios"></div>
+
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="chat-area">
+    <div class="chat-header">
+      <div style="font-size:28px">💬</div>
+      <div class="chat-header-info">
+        <h2>ChatZap</h2>
+        <p id="header-status">Conectando...</p>
+      </div>
+    </div>
+
+    <div class="destinatarios">
+      Enviando para: <span id="info-destinatarios">Todos</span>
+    </div>
+
+    <div class="mensagens" id="mensagens"></div>
+
+    <div class="chat-input">
+      <input
+        type="text"
+        id="input-mensagem"
+        placeholder="Digite uma mensagem..."
+        onkeydown="if(event.key==='Enter') enviarMensagem()"
+      />
+      <button class="btn-enviar" onclick="enviarMensagem()">➤</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="js/chat.js"></script>
+</body>
+</html>

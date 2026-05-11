@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatZap — Login</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+
+  <div class="auth-container">
+    <div class="auth-logo">💬</div>
+    <h1 class="auth-titulo">ChatZap</h1>
+    <p class="auth-sub">Seu chat privado com amigos</p>
+
+    <!-- ABAS -->
+    <div class="abas">
+      <button class="aba ativa" onclick="trocarAba('login')">Entrar</button>
+      <button class="aba" onclick="trocarAba('cadastro')">Cadastrar</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="form-login" class="form-box">
+      <input type="email" id="login-email" placeholder="Seu email" />
+      <input type="password" id="login-senha" placeholder="Sua senha" />
+      <button class="btn-principal" onclick="fazerLogin()">Entrar</button>
+      <p id="login-erro" class="erro"></p>
+    </div>
+
+    <!-- CADASTRO -->
+    <div id="form-cadastro" class="form-box escondido">
+      <input type="text" id="cad-nome" placeholder="Seu nome" />
+      <input type="email" id="cad-email" placeholder="Seu email" />
+      <input type="password" id="cad-senha" placeholder="Sua senha" />
+      <button class="btn-principal" onclick="fazerCadastro()">Cadastrar</button>
+      <p id="cad-erro" class="erro"></p>
+      <p id="cad-sucesso" class="sucesso"></p>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>
