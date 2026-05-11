@@ -1,5 +1,3 @@
-//const API = 'http://localhost:3000'
-//const API = 'http://192.168.1.90:3000'
 const API = 'https://backendchat1.onrender.com'
 
 // Pega dados do usuário logado
@@ -12,10 +10,12 @@ if (!token || !usuario.id) {
 }
 
 // Conecta no WebSocket
-           //const socket = io(API)
 const socket = io(API, {
-  transports: ['websocket', 'polling'],
-  secure: true
+  transports: ['polling', 'websocket'],
+  withCredentials: true,
+  reconnection: true,
+  reconnectionAttempts: 5,
+  reconnectionDelay: 1000
 })
 
 // Destinatários selecionados
@@ -66,15 +66,15 @@ function renderizarUsuarios(lista) {
   container.innerHTML = ''
 
   lista.forEach(u => {
-    if (u.id === usuario.id) return
+    if (String(u._id) === String(usuario.id)) return
 
-    const online = u.online !== undefined ? u.online : true
-    const selecionado = destinatarios.includes(u.id)
+    const online = u.online || false
+    const selecionado = destinatarios.includes(String(u._id))
 
     const item = document.createElement('div')
     item.className = `usuario-item ${selecionado ? 'selecionado' : ''}`
-    item.id = `usuario-${u.id}`
-    item.onclick = () => toggleUsuario(u.id, u.nome)
+    item.id = `usuario-${u._id}`
+    item.onclick = () => toggleUsuario(String(u._id), u.nome)
     item.innerHTML = `
       <div class="bolinha ${online ? 'online' : 'offline'}"></div>
       <div class="usuario-nome">${u.nome}</div>
@@ -98,3 +98,114 @@ function toggleTodos() {
   } else {
     itemTodos.className = 'usuario-item'
     checkTodos.textContent = ''
+  }
+
+  atualizarInfo()
+  document.querySelectorAll('#lista-usuarios .usuario-item')
+    .forEach(el => {
+      el.classList.remove('selecionado')
+      el.querySelector('.check').textContent = ''
+    })
+}
+
+// Toggle usuário individual
+function toggleUsuario(id, nome) {
+  if (todosAtivo) {
+    todosAtivo = false
+    document.getElementById('item-todos').className = 'usuario-item'
+    document.getElementById('check-todos').textContent = ''
+  }
+
+  const index = destinatarios.indexOf(id)
+  const item = document.getElementById(`usuario-${id}`)
+  const check = item.querySelector('.check')
+
+  if (index === -1) {
+    destinatarios.push(id)
+    item.classList.add('selecionado')
+    check.textContent = '✅'
+  } else {
+    destinatarios.splice(index, 1)
+    item.classList.remove('selecionado')
+    check.textContent = ''
+  }
+
+  atualizarInfo()
+}
+
+// Atualiza info de destinatários
+function atualizarInfo() {
+  const info = document.getElementById('info-destinatarios')
+  if (todosAtivo) {
+    info.textContent = 'Todos'
+  } else if (destinatarios.length === 0) {
+    info.textContent = 'Ninguém selecionado'
+  } else {
+    const nomes = []
+    destinatarios.forEach(id => {
+      const el = document.getElementById(`usuario-${id}`)
+      if (el) nomes.push(el.querySelector('.usuario-nome').textContent)
+    })
+    info.textContent = nomes.join(', ')
+  }
+}
+
+// Enviar mensagem
+function enviarMensagem() {
+  const input = document.getElementById('input-mensagem')
+  const texto = input.value.trim()
+
+  if (!texto) return
+  if (!socket.connected) {
+    alert('Sem conexão com o servidor!')
+    return
+  }
+
+  if (todosAtivo || destinatarios.length === 0) {
+    socket.emit('mensagemGrupo', {
+      remetente: usuario.nome,
+      remetenteId: usuario.id,
+      texto
+    })
+  } else {
+    destinatarios.forEach(destId => {
+      socket.emit('mensagemPrivada', {
+        remetente: usuario.nome,
+        remetenteId: usuario.id,
+        destinatarioId: destId,
+        texto
+      })
+    })
+  }
+
+  input.value = ''
+}
+
+// Adicionar mensagem na tela
+function adicionarMensagem(msg) {
+  const container = document.getElementById('mensagens')
+  const ehMinha = msg.remetenteId === usuario.id ||
+                  msg.remetente === usuario.nome
+
+  const div = document.createElement('div')
+  div.className = `mensagem ${ehMinha ? 'minha' : 'outra'}`
+  div.innerHTML = `
+    <div class="msg-remetente">${msg.remetente}</div>
+    <div class="msg-balao">${msg.texto}</div>
+    <div class="msg-hora">${msg.hora}</div>
+    <div class="msg-tipo">${msg.tipo === 'privada' ? '🔒 privada' : '👥 grupo'}</div>
+  `
+
+  container.appendChild(div)
+  container.scrollTop = container.scrollHeight
+}
+
+// Sair
+function sair() {
+  localStorage.removeItem('token')
+  localStorage.removeItem('usuario')
+  window.location.href = 'index.html'
+}
+
+// Inicia
+carregarUsuarios()
