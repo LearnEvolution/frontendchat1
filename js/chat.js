@@ -180,6 +180,11 @@ function enviarMensagem() {
     return
   }
 
+  if (!todosAtivo && destinatarios.length === 0) {
+    alert('Selecione pelo menos uma pessoa ou marque Todos!')
+    return
+  }
+
   if (todosAtivo || destinatarios.length === 0) {
     socket.emit('mensagemGrupo', {
       remetente: usuario.nome,
