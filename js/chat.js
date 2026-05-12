@@ -68,17 +68,27 @@ document.getElementById('meu-avatar').textContent = usuario.nome[0].toUpperCase(
 
 // Carrega histórico de mensagens
 async function carregarHistorico() {
-  if (localStorage.getItem('limpou_' + usuario.id) === 'sim') return
   try {
     const res = await fetch(`${API}/auth/mensagens`, {
       headers: { 'authorization': token }
     })
     const mensagens = await res.json()
-    mensagens.forEach(msg => adicionarMensagem(msg))
+    const limpouEm = localStorage.getItem('limpou_' + usuario.id)
+
+    mensagens.forEach(msg => {
+      if (limpouEm) {
+        const horaMensagem = new Date(msg.criadoEm || 0)
+        const horaLimpeza = new Date(limpouEm)
+        if (horaMensagem < horaLimpeza) return
+      }
+      adicionarMensagem(msg)
+    })
   } catch {
     console.log('Erro ao carregar histórico')
   }
 }
+
+
 
 // Carrega usuários cadastrados
 async function carregarUsuarios() {
@@ -242,9 +252,10 @@ function adicionarMensagem(msg) {
 function limparMensagens() {
   if (confirm('Limpar todas as mensagens da sua tela?')) {
     document.getElementById('mensagens').innerHTML = ''
-    localStorage.setItem('limpou_' + usuario.id, 'sim')
+    localStorage.setItem('limpou_' + usuario.id, new Date().toISOString())
   }
 }
+
 
 // Scroll pro topo
 function scrollTopo() {
