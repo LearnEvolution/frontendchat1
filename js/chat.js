@@ -68,6 +68,7 @@ document.getElementById('meu-avatar').textContent = usuario.nome[0].toUpperCase(
 
 // Carrega histórico de mensagens
 async function carregarHistorico() {
+  if (localStorage.getItem('limpou_' + usuario.id) === 'sim') return
   try {
     const res = await fetch(`${API}/auth/mensagens`, {
       headers: { 'authorization': token }
@@ -241,6 +242,7 @@ function adicionarMensagem(msg) {
 function limparMensagens() {
   if (confirm('Limpar todas as mensagens da sua tela?')) {
     document.getElementById('mensagens').innerHTML = ''
+    localStorage.setItem('limpou_' + usuario.id, 'sim')
   }
 }
 
@@ -259,6 +261,7 @@ function scrollFundo() {
 function sair() {
   localStorage.removeItem('token')
   localStorage.removeItem('usuario')
+  localStorage.removeItem('limpou_' + usuario.id)
   window.location.href = 'index.html'
 }
 
