@@ -33,9 +33,15 @@ socket.on('disconnect', () => {
   document.getElementById('header-status').textContent = '🔴 Desconectado'
 })
 
-// Atualiza lista de usuários online
+// Atualiza só o status online sem resetar seleção
 socket.on('usuariosOnline', (lista) => {
-  renderizarUsuarios(lista)
+  lista.forEach(u => {
+    const item = document.getElementById(`usuario-${u.id}`)
+    if (item) {
+      const bolinha = item.querySelector('.bolinha')
+      bolinha.className = `bolinha ${u.online ? 'online' : 'offline'}`
+    }
+  })
 })
 
 // Recebe nova mensagem
