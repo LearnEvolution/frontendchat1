@@ -33,24 +33,28 @@ socket.on('disconnect', () => {
   document.getElementById('header-status').textContent = '🔴 Desconectado'
 })
 
-// Atualiza status online e remove quem saiu
+// Mostra só quem está online
 socket.on('usuariosOnline', (lista) => {
-  const idsOnline = lista.map(u => u.id)
+  const container = document.getElementById('lista-usuarios')
+  container.innerHTML = ''
 
   lista.forEach(u => {
-    const item = document.getElementById(`usuario-${u.id}`)
-    if (item) {
-      item.querySelector('.bolinha').className = 'bolinha online'
-    }
-  })
+    if (String(u.id) === String(usuario.id)) return
+    if (!u.online) return
 
-  document.querySelectorAll('#lista-usuarios .usuario-item')
-    .forEach(el => {
-      const id = el.id.replace('usuario-', '')
-      if (!idsOnline.includes(id)) {
-        el.querySelector('.bolinha').className = 'bolinha offline'
-      }
-    })
+    const selecionado = destinatarios.includes(String(u.id))
+
+    const item = document.createElement('div')
+    item.className = `usuario-item ${selecionado ? 'selecionado' : ''}`
+    item.id = `usuario-${u.id}`
+    item.onclick = () => toggleUsuario(String(u.id), u.nome)
+    item.innerHTML = `
+      <div class="bolinha online"></div>
+      <div class="usuario-nome">${u.nome}</div>
+      <div class="check">${selecionado ? '✅' : ''}</div>
+    `
+    container.appendChild(item)
+  })
 })
 
 // Recebe nova mensagem
@@ -88,15 +92,15 @@ async function carregarUsuarios() {
   }
 }
 
-// Renderiza lista de usuários
+// Renderiza lista inicial de usuários
 function renderizarUsuarios(lista) {
   const container = document.getElementById('lista-usuarios')
   container.innerHTML = ''
 
   lista.forEach(u => {
     if (String(u._id) === String(usuario.id)) return
+    if (!u.online) return
 
-    const online = u.online || false
     const selecionado = destinatarios.includes(String(u._id))
 
     const item = document.createElement('div')
@@ -104,7 +108,7 @@ function renderizarUsuarios(lista) {
     item.id = `usuario-${u._id}`
     item.onclick = () => toggleUsuario(String(u._id), u.nome)
     item.innerHTML = `
-      <div class="bolinha ${online ? 'online' : 'offline'}"></div>
+      <div class="bolinha online"></div>
       <div class="usuario-nome">${u.nome}</div>
       <div class="check">${selecionado ? '✅' : ''}</div>
     `
