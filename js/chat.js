@@ -237,6 +237,24 @@ function adicionarMensagem(msg) {
   container.scrollTop = container.scrollHeight
 }
 
+// Limpar mensagens da tela
+function limparMensagens() {
+  if (confirm('Limpar todas as mensagens da sua tela?')) {
+    document.getElementById('mensagens').innerHTML = ''
+  }
+}
+
+// Scroll pro topo
+function scrollTopo() {
+  document.getElementById('mensagens').scrollTop = 0
+}
+
+// Scroll pro fundo
+function scrollFundo() {
+  const container = document.getElementById('mensagens')
+  container.scrollTop = container.scrollHeight
+}
+
 // Sair
 function sair() {
   localStorage.removeItem('token')

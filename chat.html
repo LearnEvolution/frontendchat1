@@ -24,17 +24,12 @@
     <div class="sidebar-titulo">Enviar para</div>
 
     <div class="lista-usuarios">
-
-      <!-- TODOS -->
       <div class="usuario-item todos-selecionado" id="item-todos" onclick="toggleTodos()">
         <div class="bolinha online"></div>
         <div class="usuario-nome">👥 Todos</div>
         <div class="check" id="check-todos">✅</div>
       </div>
-
-      <!-- LISTA DINÂMICA -->
       <div id="lista-usuarios"></div>
-
     </div>
   </div>
 
@@ -45,6 +40,11 @@
       <div class="chat-header-info">
         <h2>ChatZap</h2>
         <p id="header-status">Conectando...</p>
+      </div>
+      <div class="header-acoes">
+        <button class="btn-scroll" onclick="scrollTopo()" title="Ir ao topo">⬆️</button>
+        <button class="btn-scroll" onclick="scrollFundo()" title="Ir ao fundo">⬇️</button>
+        <button class="btn-limpar" onclick="limparMensagens()">🗑️ Limpar</button>
       </div>
     </div>
 
