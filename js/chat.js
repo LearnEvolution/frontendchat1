@@ -47,6 +47,19 @@ socket.on('novaMensagem', (msg) => {
 document.getElementById('meu-nome').textContent = usuario.nome
 document.getElementById('meu-avatar').textContent = usuario.nome[0].toUpperCase()
 
+// Carrega histórico de mensagens
+async function carregarHistorico() {
+  try {
+    const res = await fetch(`${API}/auth/mensagens`, {
+      headers: { 'authorization': token }
+    })
+    const mensagens = await res.json()
+    mensagens.forEach(msg => adicionarMensagem(msg))
+  } catch {
+    console.log('Erro ao carregar histórico')
+  }
+}
+
 // Carrega usuários cadastrados
 async function carregarUsuarios() {
   try {
@@ -209,3 +222,4 @@ function sair() {
 
 // Inicia
 carregarUsuarios()
+carregarHistorico()
