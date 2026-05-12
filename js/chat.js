@@ -33,15 +33,24 @@ socket.on('disconnect', () => {
   document.getElementById('header-status').textContent = '🔴 Desconectado'
 })
 
-// Atualiza só o status online sem resetar seleção
+// Atualiza status online e remove quem saiu
 socket.on('usuariosOnline', (lista) => {
+  const idsOnline = lista.map(u => u.id)
+
   lista.forEach(u => {
     const item = document.getElementById(`usuario-${u.id}`)
     if (item) {
-      const bolinha = item.querySelector('.bolinha')
-      bolinha.className = `bolinha ${u.online ? 'online' : 'offline'}`
+      item.querySelector('.bolinha').className = 'bolinha online'
     }
   })
+
+  document.querySelectorAll('#lista-usuarios .usuario-item')
+    .forEach(el => {
+      const id = el.id.replace('usuario-', '')
+      if (!idsOnline.includes(id)) {
+        el.querySelector('.bolinha').className = 'bolinha offline'
+      }
+    })
 })
 
 // Recebe nova mensagem
