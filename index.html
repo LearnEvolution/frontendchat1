@@ -27,15 +27,33 @@
       <p id="login-erro" class="erro"></p>
     </div>
 
-    <!-- CADASTRO -->
+    <!-- CADASTRO — PASSO 1 -->
     <div id="form-cadastro" class="form-box escondido">
       <input type="text" id="cad-nome" placeholder="Seu nome" />
       <input type="email" id="cad-email" placeholder="Seu email" />
       <input type="password" id="cad-senha" placeholder="Sua senha" />
-      <button class="btn-principal" onclick="fazerCadastro()">Cadastrar</button>
+      <button class="btn-principal" onclick="enviarCodigo()">Enviar código de verificação</button>
       <p id="cad-erro" class="erro"></p>
       <p id="cad-sucesso" class="sucesso"></p>
     </div>
+
+    <!-- CADASTRO — PASSO 2 -->
+    <div id="form-verificacao" class="form-box escondido">
+      <p style="color:#94a3b8;font-size:14px;text-align:center;margin-bottom:8px;">
+        📧 Código enviado pro seu email!<br>Digite os 4 dígitos abaixo:
+      </p>
+      <input
+        type="number"
+        id="cad-codigo"
+        placeholder="0000"
+        maxlength="4"
+        style="text-align:center;font-size:28px;font-weight:900;letter-spacing:8px;"
+      />
+      <button class="btn-principal" onclick="verificarECadastrar()">✅ Verificar e Cadastrar</button>
+      <button class="btn-reenviar" onclick="voltarCadastro()">← Voltar</button>
+      <p id="ver-erro" class="erro"></p>
+    </div>
+
   </div>
 
   <script src="js/auth.js"></script>
